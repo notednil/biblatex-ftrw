@@ -1,0 +1,138 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{RichtlijnenFTRW}[Facultaire richtlijnen Theologie en Religiewetenschappen]
+\RequirePackage[backend=biber,
+                citereset=none,
+                maxcitenames=3,
+                maxbibnames=3,
+                date=long,
+                dateabbrev=false,
+                style=authortitle-dw,
+                nopublisher=false,
+                ibidemfont=italic,
+                addyear=true,
+                useprefix=true,
+                firstfull=true,
+                editionstring=true,
+                edstringincitations=true,
+                edsuper=true,
+                citepages=permit,
+                namefont=smallcaps,
+                journalnumber=afteryear,
+                citedas=false,
+                citetracker=context,
+                terselos=true
+                ]
+                {biblatex}
+\RequirePackage[left=25mm,
+                right=25mm,
+                top=25mm,
+                bottom=25mm,
+                bindingoffset=10mm,
+                includeheadfoot,
+                paper=a4paper]
+                {geometry}
+\DefineBibliographyStrings{dutch}{%
+  urlseen = {toegang},
+  and = {\&},
+  andothers = {\mkbibitalic{et al.}},
+  editor = {ed\adddot},
+  editors = {ed\adddot},
+  byeditor = {(ed\adddot)},
+  bytranslator = {vertaald door},
+  withannotator = {van aantekeningen voorzien door},
+  withintroduction = {ingeleid door},
+  bytranslatoran = {vertaald en van aantekeningen voorzien door},
+  bytranslatorin = {vertaald en ingeleid door},
+  bytranslatoranin = {vertaald, ingeleid en van aantekeningen voorzien door},
+  volume = {dl.},
+  volumes = {dln.},
+}
+\DeclareFieldFormat{url}{\bibstring{url}\space\url{#1}}
+\DeclareFieldFormat{pages}{#1} 
+\DeclareNameAlias{sortname}{family-given}
+\DeclareFieldFormat{title}{\mkbibitalic{#1}}
+\DeclareFieldFormat{booktitle}{\mkbibitalic{#1}}
+\DeclareFieldFormat{citetitle}{\mkbibemph{#1}}
+\DeclareFieldFormat{journaltitle}{\mkbibemph{#1}}
+\DeclareFieldFormat{url}{\url{#1}}
+\renewcommand*{\sernumstring}{\addcomma\space}
+\renewcommand{\intitlepunct}{\space\nopunct}
+\renewcommand{\labelnamepunct}{\addcomma\space}
+\renewcommand{\nametitledelim}{\addcomma\space}
+\renewcommand{\bibmultinamedelim}{\addcomma\space}
+\renewcommand{\citemultinamedelim}{\addcomma\space}
+\renewcommand{\citefinalnamedelim}{\space\&\space}
+\renewcommand{\titleyeardelim}{\addcomma\space}
+\renewbibmacro*{publisher+location+date}{%
+    \printlist{location}%
+    \setunit*{\addcomma\space}%
+    \printlist{publisher}%
+  \setunit*{\addcomma\space}%
+  \usebibmacro{date}%
+  \newunit%
+}
+
+\DeclareBibliographyDriver{online}{% 
+    \printnames{author}% 
+    \newunit\newblockpunct 
+    \printfield{title}% 
+    \setunit{\space}
+    \newunit\nopunct  
+    \printtext{(}\usebibmacro{date}\printtext{)}
+    \newunit\addsemicolon 
+    \printfield{url}% 
+    \setunit*{\space}% 
+    \printurldate% 
+    \usebibmacro{finentry}}
+\renewbibmacro*{cite:title}{%
+  \ifsingletitle
+    {\setunit{}}% Löschen des \nametitledelim, falls kein Titel ausgegeben wird
+    {\ifboolexpr{
+      test {\ifentrytype{review}}
+      and
+      not test {\iffieldundef{xref}}
+    }
+      {\printtext[review]{\bbx@review{\thefield{xref}}}}
+      {\printtext[bibhyperref]{%
+         \printfield[citetitle]{labeltitle}}}%
+     \ifbool{cbx:addyear}
+        {\iffieldundef{year}
+           {}
+           {\titleyeardelim%
+            \printfield{year}}}% no \parentext here
+        {}}}
+\renewbibmacro*{cite:title:force}{%
+  \printtext[bibhyperref]{%
+    \printfield[citetitle]{labeltitle}}%
+  \ifbool{cbx:addyear}
+    {\iffieldundef{year}
+      {}
+      {\titleyeardelim%
+       \printfield{year}}}% no \parentext here
+    {}}
+\makeatother
+\DeclareNameFormat{labelname}{%
+  {\iffootnote{{}}{}}{}%
+  \bibhyperref{\nameparts{#1}%
+  \ifnum\value{uniquename}<2
+    \ifuseprefix
+      {\usebibmacro{name:given-family}%
+        {\namepartfamily}%
+        {\namepartgiveni}%
+        {\namepartprefix}%
+        {\namepartsuffixi}}%
+      {\usebibmacro{name:given-family}%
+        {\namepartfamily}%
+        {\namepartgiveni}%
+        {\namepartprefixi}%
+        {\namepartsuffixi}}%
+  \else
+    \usebibmacro{name:given-family}%
+      {\namepartfamily}%
+      {\namepartgiven}%
+      {\namepartprefix}%
+      {\namepartsuffix}%
+  \fi
+  \usebibmacro{name:andothers}}}%
+\renewcommand{\finallistdelim}{\space---\space} %delim between 2 Publ./Locations
+\renewcommand{\multilistdelim}{\space---\space} %delim between multiple 3+ Publ./Locations
